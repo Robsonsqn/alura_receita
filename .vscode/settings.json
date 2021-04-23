@@ -1,8 +1,0 @@
-{
-    "python.pythonPath": "/home/robson/Documents/ze/env/bin/python",
-    "python.linting.pylintArgs": [
-        "--load-plugins=pylint_django",
-        "--disable=django-not-configured",
-
-    ]
-}
