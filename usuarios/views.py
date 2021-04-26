@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User 
-from django.contrib import auth
+from django.contrib import auth, messages
 from receitas.models import Receita
+
 
 def cadastro (request):
     '''
@@ -12,22 +13,27 @@ def cadastro (request):
         email = request.POST['email']
         senha = request.POST['password']
         senha2 = request.POST['password2']
-        if not nome.strip():
-            print('O nome não pode estar em branco')
+        if _campo_vazio(nome):
+            messages.error(request, 'O nome não pode estar em branco')
             return redirect('cadastro')
-        if not email.strip():
-            print('O email não pode estar em branco')
+        if _campo_vazio(email):
+            messages.error(request, 'O email não pode estar em branco')
+            return redirect('cadastro')
+        if _campo_vazio(senha):
+            messages.error(request, 'A senha não pode estar em branco')
             return redirect('cadastro')
         if senha != senha2:
-            print('senhas não conhecidem')
-        if not senha.strip():
-            print('a senha não pode estar em branco')
+            messages.error(request, 'As senhas não conhecidem')
             return redirect('cadastro')
-        if User.objects.filter(email = email).exists():
-            print('Usuario ja cadastrado')
+        if _verifica_email(email):
+            messages.error(request, 'Este email já esta em nosso sistema')
             return redirect('cadastro')
-        user = User.objects.create_user(username= nome, email = email, password = senha)
+        if User.objects.filter(username=nome).exists():
+            messages.error(request, 'Este usuario já esta em nosso sistema')
+            return redirect('cadastro')
+        user = User.objects.create_user(username= email,email = email, password = senha, first_name=nome)
         user.save()
+        messages.success(request, 'Cadastro realizado com sucesso')
         return redirect('login')
     else :
         return render(request, 'usuarios/cadastro.html')
@@ -37,11 +43,10 @@ def login (request):
     if request.method == 'POST':
         email = request.POST['email']
         senha = request.POST['senha']
-        if email == '' or senha == '':
-            print('Os campos email e senha não podem ficar em branco')
+        if _campo_vazio(email) or _campo_vazio(senha):
+            messages.error(request, 'Os campos email e senha não podem ficar em branco')
             return redirect('login')
-        print(email, senha)
-        if User.objects.filter(email = email).exists():
+        if _verifica_email(email):
             nome = User.objects.filter(email=email).values_list('username', flat=True).get()
             user = auth.authenticate(request, username=nome, password=senha)
             if user is not None:
@@ -78,9 +83,35 @@ def cria_receita (request):
         rendimento = request.POST['rendimento']
         categoria = request.POST['categoria']
         foto_receita = request.FILES['foto_receita']
+        if _campo_vazio(nome_receita):
+            messages.error(request, "O campo nome da receita não pode ser nulo")
+            return redirect('cria_receita')
+        if _campo_vazio(ingredientes):
+            messages.error(request, "O campo ingredientes não pode ser nulo")
+            return redirect('cria_receita')
+        if _campo_vazio(modo_preparo):
+            messages.error(request, "O campo modo de preparo não pode ser nulo")
+            return redirect('cria_receita')
+        if _campo_vazio(tempo_preparo):
+            messages.error(request, "O campo tempo de preparo não pode ser nulo")
+            return redirect('cria_receita')
+        if _campo_vazio(rendimento):
+            messages.error(request, "O campo rendimento não pode ser nulo")
+            return redirect('cria_receita')
+        if _campo_vazio(categoria):
+            messages.error(request, "O campo categoria não pode ser nulo")
+            return redirect('cria_receita')
         user = get_object_or_404(User, pk=request.user.id)
         receita = Receita.objects.create(pessoa=user, nome_receita=nome_receita, ingredientes=ingredientes, modo_preparo=modo_preparo, tempo_preparo=tempo_preparo, rendimento=rendimento, categoria=categoria, foto_receita=foto_receita)
         receita.save()
         return redirect('dashboard')
     else:
         return render(request,'usuarios/cria_receita.html')
+
+
+def _campo_vazio(campo):
+    return not campo.strip()
+
+
+def _verifica_email(email):
+    return User.objects.filter(email = email).exists()
