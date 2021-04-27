@@ -16,30 +16,27 @@ def cadastro (request):
         if _campo_vazio(nome):
             messages.error(request, 'O nome não pode estar em branco')
             return redirect('cadastro')
-        if _campo_vazio(email):
-            messages.error(request, 'O email não pode estar em branco')
-            return redirect('cadastro')
-        if _campo_vazio(senha):
-            messages.error(request, 'A senha não pode estar em branco')
+        if _campo_vazio(email) or _campo_vazio(senha):
+            messages.error(request, 'O email e senha não podem estar em branco')
             return redirect('cadastro')
         if senha != senha2:
             messages.error(request, 'As senhas não conhecidem')
             return redirect('cadastro')
-        if _verifica_email(email):
+        if _verifica_email(email) or User.objects.filter(username=nome).exists():
             messages.error(request, 'Este email já esta em nosso sistema')
-            return redirect('cadastro')
-        if User.objects.filter(username=nome).exists():
-            messages.error(request, 'Este usuario já esta em nosso sistema')
             return redirect('cadastro')
         user = User.objects.create_user(username= email,email = email, password = senha, first_name=nome)
         user.save()
         messages.success(request, 'Cadastro realizado com sucesso')
         return redirect('login')
-    else :
+    else:
         return render(request, 'usuarios/cadastro.html')
 
 
 def login (request):
+    '''
+        MAke a login based in a email and a password
+    '''
     if request.method == 'POST':
         email = request.POST['email']
         senha = request.POST['senha']
@@ -52,16 +49,28 @@ def login (request):
             if user is not None:
                 auth.login(request, user)
                 return redirect('dashboard')
+            else :
+                messages.error(request, 'Falha ao logar, tente novamente')
+                return redirect('login')
+        else :
+            messages.error(request, 'Usuario Não cadastrado no sistema')
+            return redirect('login')
     else:
         return render(request, 'usuarios/login.html')
 
 
 def logout (request):
+    '''
+        Logout current user in system
+    '''
     auth.logout(request)
     return redirect('index')
 
 
 def dashboard (request):
+    '''
+        Redirect current user to a dashboard with your recipes
+    '''
     if request.user.is_authenticated:
         user = request.user.id
         receitas = Receita.objects.order_by('-data_receita').filter(pessoa=user)

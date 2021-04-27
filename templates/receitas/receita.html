@@ -1,11 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-    <!-- Preloader -->
-    <div id="preloader">
-        <i class="circle-preloader"></i>
-        <img src="{% static 'img/core-img/hamburger.png' %}" alt="">
-    </div>
+    
+    {% include 'partials/_loader.html' %}
 
     {% include 'partials/_busca.html' %}
 
@@ -37,9 +34,9 @@
                 <div class="col-12">
                     <div class="receipe-slider owl-carousel">
                         {% if receita.foto_receita == '' %}
-                            <img src="{% static 'img/bg-img/tomate_banner.jpg' %}">
+                            <img src="{% static 'img/bg-img/tomate_banner.jpg' %}" alt="{{ receita.nome_receita }}">
                         {% else %}
-                            <img src="{{ receita.foto_receita.url }}" alt="">
+                            <img src="{{ receita.foto_receita.url }}" alt="{{ receita.nome_receita }}">
                         {% endif %}
                     </div>
                 </div>
