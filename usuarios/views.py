@@ -74,41 +74,6 @@ def dashboard (request):
         return redirect('login')
 
 
-def cria_receita (request):
-    if request.method == 'POST':
-        nome_receita = request.POST['nome_receita']
-        ingredientes = request.POST['ingredientes']
-        modo_preparo = request.POST['modo_preparo']
-        tempo_preparo = request.POST['tempo_preparo']
-        rendimento = request.POST['rendimento']
-        categoria = request.POST['categoria']
-        foto_receita = request.FILES['foto_receita']
-        if _campo_vazio(nome_receita):
-            messages.error(request, "O campo nome da receita não pode ser nulo")
-            return redirect('cria_receita')
-        if _campo_vazio(ingredientes):
-            messages.error(request, "O campo ingredientes não pode ser nulo")
-            return redirect('cria_receita')
-        if _campo_vazio(modo_preparo):
-            messages.error(request, "O campo modo de preparo não pode ser nulo")
-            return redirect('cria_receita')
-        if _campo_vazio(tempo_preparo):
-            messages.error(request, "O campo tempo de preparo não pode ser nulo")
-            return redirect('cria_receita')
-        if _campo_vazio(rendimento):
-            messages.error(request, "O campo rendimento não pode ser nulo")
-            return redirect('cria_receita')
-        if _campo_vazio(categoria):
-            messages.error(request, "O campo categoria não pode ser nulo")
-            return redirect('cria_receita')
-        user = get_object_or_404(User, pk=request.user.id)
-        receita = Receita.objects.create(pessoa=user, nome_receita=nome_receita, ingredientes=ingredientes, modo_preparo=modo_preparo, tempo_preparo=tempo_preparo, rendimento=rendimento, categoria=categoria, foto_receita=foto_receita)
-        receita.save()
-        return redirect('dashboard')
-    else:
-        return render(request,'usuarios/cria_receita.html')
-
-
 def _campo_vazio(campo):
     return not campo.strip()
 
