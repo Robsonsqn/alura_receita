@@ -1,11 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-    <!-- Preloader -->
-    <div id="preloader">
-        <i class="circle-preloader"></i>
-        <img src="{% static 'img/core-img/pizza.png' %}" alt="">
-    </div>
+    
+    {% include 'partials/_loader.html' %}
     
     {% include 'partials/_busca.html' %}
 
@@ -22,7 +19,7 @@
             </div>
         </div>
      </div>
-     
+    {% include 'partials/_alertas.html' %}
     <!-- ##### Best Receipe Area Start ##### -->
     <section class="best-receipe-area">
         <div class="container">
@@ -40,6 +37,8 @@
                             <div class="receipe-content">
                                 <a href="{% url 'receita' receita.id %}">
                                     <h5>{{ receita.nome_receita }}</h5>
+                                    <a href="{% url 'edita_receita' receita.id%}" type="button" class="btn btn-info">Editar</a>
+                                    <a href="{% url 'deleta_receita' receita.id%}" type="button" class="btn btn-danger">Deletar</a>
                                 </a>
                             </div>
                         </div>

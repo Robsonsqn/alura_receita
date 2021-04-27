@@ -8,7 +8,9 @@ Projeto criado baseado na trilha de formação de DJango na plataforma de cursos
 ## Milha extra (Pós aula)
 1. Criação do DockerFile para deploy da aplicação
 2. Criação de testes unitarios da aplicação
-3. WIP
+3. Adicionando mais mensagens de erros
+4. Alteração para o username ser o email e o first_name ser o nome do usuario
+5. WIP
 #
 
 ## Pré requisitos

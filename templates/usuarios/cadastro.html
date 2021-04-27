@@ -1,11 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<!-- Preloader -->
-<div id="preloader">
-    <i class="circle-preloader"></i>
-    <img src="{% static 'img/core-img/pizza.png' %}" alt="">
-</div>
+
+{% include 'partials/_loader.html' %}
 
 {% include 'partials/_busca.html' %}
 
@@ -29,19 +26,19 @@
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-12 col-lg-12">
-                                <label for="nome_receita"><b>Nome completo</b></label>
+                                <label for="nome_receita"><strong>Nome completo</strong></label>
                                 <input type="text" class="form-control" name="nome" placeholder="Ex.:Guilherme Lima" required>
                             </div>
                             <div class="col-12 col-lg-12">
-                                <label for="email"><b>Email</b></label>
+                                <label for="email"><strong>Email</strong></label>
                                 <input type="email" class="form-control" name="email" placeholder="Ex.: guilherme@receitas.com" required>
                             </div>
                             <div class="col-12 col-lg-6">
-                                <label for="password"><b>Senha</b></label>
+                                <label for="password"><strong>Senha</strong></label>
                                 <input type="password" class="form-control" name="password" placeholder="Digite sua senha" required>
                             </div>
                             <div class="col-12 col-lg-6">
-                                <label for="password2"><b>Confirmação de senha</b></label>
+                                <label for="password2"><strong>Confirmação de senha</strong></label>
                                 <input type="password" class="form-control" name="password2" placeholder="Digite sua senha mais uma vez" required>
                             </div>
                             <div class="col-12 text-center">
