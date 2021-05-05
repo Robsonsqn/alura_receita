@@ -24,12 +24,31 @@ services:
         command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"    
         ports:
             - "8000:8000"
+        volumes:
+            - receitas:/APP/media
         networks: 
             - "production-network"
         depends_on: 
             - "db"
+    pgadmin:
+        container_name: pgadmin_container
+        image: dpage/pgadmin4
+        environment:
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+            PGADMIN_DEFAULT_PASSWORD: "root"
+            PGADMIN_CONFIG_SERVER_MODE: 'False'
+        volumes:
+            - pgadmin:/root/.pgadmin
+    
+        ports:
+            - "${PGADMIN_PORT:-5050}:80"
+        networks:
+            - production-network
+        restart: unless-stopped
 networks:
     production-network: 
         driver: bridge
 volumes: 
     postgres: {}
+    pgadmin: {}
+    receitas: {}
